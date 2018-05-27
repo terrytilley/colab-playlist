@@ -12,7 +12,8 @@ app.get('/login', (req, res) => {
     `https://accounts.spotify.com/authorize?${qs.stringify({
       response_type: 'code',
       client_id: process.env.SPOTIFY_CLIENT_ID,
-      scope: 'user-read-private user-read-email',
+      scope:
+        'user-read-private user-read-email playlist-read-private playlist-read-collaborative',
       redirect_uri: redirectUri,
     })}`
   );
@@ -37,8 +38,11 @@ app.get('/callback', (req, res) => {
   request.post(authOptions, (error, response, body) => {
     const uri = process.env.FRONTEND_URI;
     const accessToken = body.access_token;
+    const refreshToken = body.refresh_token;
 
-    res.redirect(`${uri}?access_token=${accessToken}`);
+    res.redirect(
+      `${uri}?access_token=${accessToken}&refresh_token=${refreshToken}`
+    );
   });
 });
 
